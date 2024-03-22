@@ -2,9 +2,27 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import { RegFields } from '../@types/auth';
 
+const securitySchema = new Schema({
+  hastwoFactorAuth: {
+    type: Boolean,
+    default: false
+  },
+ isverified:{
+  email:{
+    type:Boolean,
+    default:false
+  },
+  phonenumber:{
+    type:Boolean,
+    default:false
 
+  }
 
-const userSchema = new Schema<RegFields>({
+ }
+  // Add more security-related fields as needed
+});
+
+const userSchema = new Schema({
   firstName: {
     type: String,
     required: true
@@ -49,7 +67,8 @@ const userSchema = new Schema<RegFields>({
   gender: {
     type: String,
     enum: ['male', 'female', 'other']
-  }
+  },
+  security:securitySchema
 });
 
 const User = mongoose.model<RegFields>('User', userSchema);

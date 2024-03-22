@@ -26,23 +26,22 @@ config()
 import connectDB from "./database/connection.js";
 import bodyParser from "body-parser";
 import { AuthTokenChecker } from "./middlewares/Tokenchecker.js";
- const port = 3001;
+ const port =process.env.BACKEND_PORT
  const apiLimiter = rateLimit({
    windowMs: 15 * 60 * 1000, // 15 minutes
    max: 10, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
    message: 'Too many requests from this IP, please try again after 15 minutes',
  });
 
- // testing purpose
 
 
 // END  
  app.use("/*",apiLimiter)
  app.use("/get",dataroute)
  app.use("/auth",auth)
- app.get("/protected",AuthTokenChecker,(req,res)=>{
-  res.send("ok")
-})
+//  app.get("/protected",AuthTokenChecker,(req,res)=>{
+//   res.send("ok")
+// })
 
  app.listen(port, async () => {
   let connection=await connectDB()

@@ -1,5 +1,7 @@
 import { error } from "console";
 import jwt, { SignOptions } from "jsonwebtoken";
+import {config} from "dotenv"
+config()
 
 interface Payload {
   user_id: string;

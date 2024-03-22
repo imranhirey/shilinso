@@ -7,7 +7,6 @@ config()
 const connectDB = async (): Promise<void> => {
     console.log("connecting to db ...")
     try {
-        //mongodb+srv://<username>:<password>@shilinso.qvlufad.mongodb.net/?retryWrites=true&w=majority&appName=shilinso
         const uri = process.env.DB_URL?.toString()
 
 
@@ -18,7 +17,7 @@ const connectDB = async (): Promise<void> => {
         console.log('MongoDB connected');
     } catch (error) {
         console.error('Error connecting to MongoDB:', error);
-        process.exit(1); // Exit the application if unable to connect to the database
+        
     }
 };
 

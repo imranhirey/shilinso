@@ -1,4 +1,5 @@
 import path from "path";
+import fs from "fs";
 let countrieska = [
     'Japan',
     'Indonesia',
@@ -104,7 +105,6 @@ let countrieska = [
     'Netherlands',
     'Senegal',
     'Oman',
-    'Israel',
     'Mongolia',
     'Serbia',
     'Denmark',
@@ -311,7 +311,6 @@ let countrieska = [
     'Netherlands',
     'Senegal',
     'Oman',
-    'Israel',
     'Mongolia',
     'Serbia',
     'Denmark',
@@ -462,18 +461,27 @@ let countrieska = [
 function removeDuplicates(arr) {
     return [...new Set(arr)].sort();
 }
-export async function Getcitiesbycountry() {
+export async function Getcitiesbycountry(country) {
+    //@ts-ignore
+    let cities = [];
+    const __dirname = path.dirname("./src/data/countries.json");
     const filePath = path.join(__dirname, 'data', 'countries.json');
     return new Promise((resolve, reject) => {
         //@ts-ignore
-        fs.readFile(filePath, 'utf8', (error, data) => {
+        fs.readFile("./src/data/countries.json", 'utf8', (error, data) => {
             if (error) {
-                reject(`Error reading file from disk: ${error}`);
+                reject(`Error reading file from disk: ${error} ${__dirname}`);
             }
             else {
                 try {
                     const countries = JSON.parse(data);
-                    resolve(countries);
+                    //@ts-ignore
+                    countries.map((x) => {
+                        if (x.country.toLowerCase() == country)
+                            cities.push(x.city);
+                    });
+                    //@ts-ignore
+                    resolve(cities);
                 }
                 catch (parseError) {
                     reject(`Error parsing JSON data: ${parseError}`);

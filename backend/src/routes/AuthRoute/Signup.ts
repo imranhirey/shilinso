@@ -1,19 +1,22 @@
 import { Request, Response } from "express";
 import User from "../../models/userModel.js";
+import Usercontroller from "../../controllers/users/Usercontroller.js";
 
-function Signup(req: Request, res: Response) {
- 
+async function Signup(req: Request, res: Response) {
+    try {
+        const userController = new Usercontroller("personal");
+        const response = await userController.saveNewUser(req.body);
 
-    let user=new User({
-        ...req.body
-    })
-
-    user.save().then((user)=>{
-        res.send("user has been accepted and saved successfullyu")
-    })
-    .catch((err)=>{
-        res.status(500).send("oops! cant save the user => "+err)
-    })
+        if (response.type === "error") {
+            return res.status(400).send("Error: Unable to save the user Reason: "+response.data);
+        } else {
+            // Depending on your application logic, you might send a success response here
+            return res.status(200).send("User saved successfully");
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send("Internal Server Error");
+    }
 }
 
 export default Signup;

@@ -10,10 +10,10 @@ export interface RegFields{
   country?: string;
   city?: string;
   dateOfBirth: Date;
-  userId: string;
   password: string;
   profileImageUrl?: string;
   gender?: 'male' | 'female' | 'other';
+  security:object
 }
 
 
