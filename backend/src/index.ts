@@ -21,6 +21,8 @@ config()
 
  import dataroute from "./routes/data/index.js"
  import auth from "./routes/AuthRoute/index.js"
+ import verifications from "./routes/verificationsRoute/index.js"
+
 
 
 import connectDB from "./database/connection.js";
@@ -39,6 +41,7 @@ import { AuthTokenChecker } from "./middlewares/Tokenchecker.js";
  app.use("/*",apiLimiter)
  app.use("/get",dataroute)
  app.use("/auth",auth)
+ app.use("/verify",verifications)
 //  app.get("/protected",AuthTokenChecker,(req,res)=>{
 //   res.send("ok")
 // })

@@ -1,12 +1,17 @@
 import { NextFunction, Request, Response } from "express";
 import { RegFields } from "../../@types/auth";
-import { hashPassword } from "../../utils/PasswordUtils.js";
+import { hashPassword, validatePassword } from "../../utils/PasswordUtils.js";
+import validator from 'validator';
 
- function CheckSignup(req: Request, res: Response,next:NextFunction) {
+function CheckSignup(req: Request, res: Response, next: NextFunction) {
+    const sendBadRequestRes = (message: string) => {
+        return res.status(400).send(message).end();
+    }
+
     let data: RegFields = req.body;
-    const requiredFields = ['country', 'username', 'email','dateOfBirth','password','gender','phoneNumber','city','lastName','firstName']; // Add all the fields that are required
+    const requiredFields = ['firstName', 'lastName', 'email', 'dateOfBirth', 'password']; // Add all the fields that are required
 
-    let missingFields: string[] = [];
+   let missingFields: string[] = [];
     requiredFields.forEach(field => {
         if (!data.hasOwnProperty(field)) {
             missingFields.push(field);
@@ -15,21 +20,41 @@ import { hashPassword } from "../../utils/PasswordUtils.js";
     if (missingFields.length > 0) {
         return res.status(400).send({ error: "Missing required fields", missingFields });
     }
-    // hash the password
- hashPassword(data.password).then((hashPassword)=>{
-    req.body.password=hashPassword
-    next()
 
+    // Validate email
+    if (!validator.isEmail(data.email)) {
+        return sendBadRequestRes("Email is invalid");
+    }
 
+    // Validate date of birth
+    // if (!validator.isDate(data.dateOfBirth.toString())) {
+    //     return sendBadRequestRes("Date of birth is invalid");
+    // }
 
- })
- .catch((err)=>{
-    res.status(500).send("server error - password hashing")
- })
+    // Validate password strength
+  
+    const passworderrors= validatePassword(data.password)
+    if (passworderrors.length>0) {
+        return sendBadRequestRes(passworderrors.toString());
+    }
 
-     
+    // Validate gender if provided
+    const validGenders = ['male', 'female', 'other'];
+    if (data.gender && !validGenders.includes(data.gender)) {
+        return sendBadRequestRes("Invalid gender");
+    }
 
-    
+    // Additional validations can be added for other fields as needed
+
+    // Hash the password
+    hashPassword(data.password)
+        .then((hashedPassword) => {
+            req.body.password = hashedPassword;
+            next();
+        })
+        .catch((err) => {
+            res.status(500).send("Server error - password hashing");
+        });
 }
 
 export default CheckSignup;

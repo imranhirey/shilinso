@@ -33,6 +33,7 @@ class UserController {
             const userData = {
                 ...incomingUserData,
                 userId: Genrateuserid(),
+                
             };
 
             const user = new User(userData);
@@ -46,7 +47,7 @@ class UserController {
             console.error("Error saving user:", error);
             return {
                 type: "error",
-                data: "Failed to save user"+error
+                data: "Failed to register user"
             };
         }
     }
