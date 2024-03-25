@@ -18,6 +18,8 @@ config()
 });
 
 
+sendhee()
+
 
  import dataroute from "./routes/data/index.js"
  import auth from "./routes/AuthRoute/index.js"
@@ -28,6 +30,7 @@ config()
 import connectDB from "./database/connection.js";
 import bodyParser from "body-parser";
 import { AuthTokenChecker } from "./middlewares/Tokenchecker.js";
+import { sendhee } from "./communications/email/index.js";
  const port =process.env.BACKEND_PORT
  const apiLimiter = rateLimit({
    windowMs: 15 * 60 * 1000, // 15 minutes
