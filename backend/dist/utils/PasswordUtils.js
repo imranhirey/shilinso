@@ -15,3 +15,42 @@ export const comparePasswords = async (userEnteredPassword, hashFromDatabase) =>
         return false; // Return false in case of error
     }
 };
+export function validatePassword(password) {
+    const errors = [];
+    const minLength = 8;
+    const maxLength = 100;
+    const uppercaseRegex = /[A-Z]/;
+    const lowercaseRegex = /[a-z]/;
+    const digitRegex = /\d/;
+    const symbolRegex = /[$&+,:;=?@#|'<>.^*()%!-]/;
+    const noSpaceRegex = /^\S*$/;
+    // Check minimum length
+    if (password.length < minLength) {
+        errors.push("Password must be at least 8 characters long");
+    }
+    // Check maximum length
+    if (password.length > maxLength) {
+        errors.push("Password cannot exceed 100 characters");
+    }
+    // Check for at least one uppercase letter
+    if (!uppercaseRegex.test(password)) {
+        errors.push("Password must contain at least one uppercase letter");
+    }
+    // Check for at least one lowercase letter
+    if (!lowercaseRegex.test(password)) {
+        errors.push("Password must contain at least one lowercase letter");
+    }
+    // Check for at least one digit
+    if (!digitRegex.test(password)) {
+        errors.push("Password must contain at least one digit");
+    }
+    // Check for at least one symbol
+    if (!symbolRegex.test(password)) {
+        errors.push("Password must contain at least one symbol");
+    }
+    // Check for no spaces
+    if (!noSpaceRegex.test(password)) {
+        errors.push("Password cannot contain spaces");
+    }
+    return errors;
+}

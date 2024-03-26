@@ -29,6 +29,8 @@ class UserController {
     }
 
     private async personalAccount(incomingUserData: RegFields): Promise<Response> {
+
+        console.log("personal account commin",incomingUserData)
         try {
             const userData = {
                 ...incomingUserData,
@@ -37,10 +39,12 @@ class UserController {
             };
 
             const user = new User(userData);
+
+            this.log("in db saveing ",user)
             const savedUser = await user.save();
             return {
                 type: "success",
-                data: "User saved successfully"
+                data: "User saved successfully"+user.userId
             };
         } catch (error) {
             // Log or handle the error appropriately

@@ -10,6 +10,8 @@ async  function CheckLogin(req: Request, res: Response,next:NextFunction) {
     
   const {email,password}=req.body as LoginFields
 
+  log(email,password)
+
   if (!email || !password ){
     return res.send("missing email or password - all fields are required").status(400)
   }
@@ -21,11 +23,15 @@ async  function CheckLogin(req: Request, res: Response,next:NextFunction) {
     if (!user){
         return res.status(400).send("Invalid details")
     }
+    log(user)
 
     const Ispasswordmatch=  await   comparePasswords(password,user.password)
+    log(Ispasswordmatch)
     if (Ispasswordmatch){
         // i will do other stuff like generating token and respinsing abck with header added a token
-        res.setHeader("Authkey","yaamaalik4321?")
+       if (!user.security?.isverified?.email){
+        res.set("route","/auth/emailverification")
+       }
       
     }
     else{

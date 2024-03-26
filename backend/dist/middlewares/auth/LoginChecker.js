@@ -15,7 +15,6 @@ async function CheckLogin(req, res, next) {
         if (Ispasswordmatch) {
             // i will do other stuff like generating token and respinsing abck with header added a token
             res.setHeader("Authkey", "yaamaalik4321?");
-            req.body.userid = user.userId;
         }
         else {
             return res.status(401).send("Authentication Fieled you have //certain number of tries   please check your credentials before trying again or request password reset");

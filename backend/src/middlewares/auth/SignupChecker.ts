@@ -2,13 +2,28 @@ import { NextFunction, Request, Response } from "express";
 import { RegFields } from "../../@types/auth";
 import { hashPassword, validatePassword } from "../../utils/PasswordUtils.js";
 import validator from 'validator';
+import { log } from "console";
 
 function CheckSignup(req: Request, res: Response, next: NextFunction) {
+    interface Incommindata {
+        firstName: string,
+    middleName: string,
+    lastName: string,
+    gender: string,
+    country: string,
+    email: string,
+    dateOfBirth: string,
+    password: string,
+    city: string,
+    confirmPassword: string
+    }
+
     const sendBadRequestRes = (message: string) => {
         return res.status(400).send(message).end();
     }
 
-    let data: RegFields = req.body;
+    let data: Incommindata = req.body.userInfo
+    log(data)
     const requiredFields = ['firstName', 'lastName', 'email', 'dateOfBirth', 'password']; // Add all the fields that are required
 
    let missingFields: string[] = [];
@@ -49,7 +64,7 @@ function CheckSignup(req: Request, res: Response, next: NextFunction) {
     // Hash the password
     hashPassword(data.password)
         .then((hashedPassword) => {
-            req.body.password = hashedPassword;
+            req.body.userInfo.password = hashedPassword;
             next();
         })
         .catch((err) => {

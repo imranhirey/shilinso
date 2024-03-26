@@ -1,23 +1,48 @@
+import { config } from "dotenv";
+import { Genrateuserid } from "../../utils/Idgenerator.js";
+import User from "../../models/userModel.js";
+config();
 class UserController {
     usertype;
     constructor(usertype) {
         this.usertype = usertype;
     }
-    //@ts-ignore
-    @logIfDevelopment
-    savenewuser() {
-        return this.usertype === "personal" ? this.personalaccount() : this.businessaccount();
+    async saveNewUser(user) {
+        return this.usertype === "personal" ? this.personalAccount(user) : this.businessAccount();
     }
-    //@ts-ignore
-    @logIfDevelopment
-    personalaccount() {
-        console.log("Creating personal account");
+    log(message, ...args) {
+        if (process.env.ENV === "development") {
+            console.log(message, ...args);
+        }
     }
-    //@ts-ignore
-    @logIfDevelopment
-    businessaccount() {
-        console.log("Creating business account");
+    async personalAccount(incomingUserData) {
+        try {
+            const userData = {
+                ...incomingUserData,
+                userId: Genrateuserid(),
+            };
+            const user = new User(userData);
+            const savedUser = await user.save();
+            return {
+                type: "success",
+                data: "User saved successfully"
+            };
+        }
+        catch (error) {
+            // Log or handle the error appropriately
+            console.error("Error saving user:", error);
+            return {
+                type: "error",
+                data: "Failed to register user"
+            };
+        }
+    }
+    async businessAccount() {
+        this.log("Creating business account");
+        return {
+            type: "error",
+            data: "Business account creation is not implemented"
+        };
     }
 }
-// Example usage
 export default UserController;

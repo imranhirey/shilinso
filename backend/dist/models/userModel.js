@@ -1,21 +1,7 @@
 // userModel.ts
 import mongoose, { Schema } from 'mongoose';
-const securitySchema = new Schema({
-    hastwoFactorAuth: {
-        type: Boolean,
-        default: false
-    },
-    isverified: {
-        email: {
-            type: Boolean,
-            default: false
-        },
-        phonenumber: {
-            type: Boolean,
-            default: false
-        }
-    }
-    // Add more security-related fields as needed
+export const securitySchema = new Schema({
+// Add more security-related fields as needed
 });
 const userSchema = new Schema({
     firstName: {
@@ -63,7 +49,22 @@ const userSchema = new Schema({
         type: String,
         enum: ['male', 'female', 'other']
     },
-    security: securitySchema
+    security: {
+        hastwoFactorAuth: {
+            type: Boolean,
+            default: false
+        },
+        isverified: {
+            email: {
+                type: Boolean,
+                default: false
+            },
+            phonenumber: {
+                type: Boolean,
+                default: false
+            }
+        }
+    }
 });
 const User = mongoose.model('User', userSchema);
 export default User;

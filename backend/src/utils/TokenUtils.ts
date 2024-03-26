@@ -35,7 +35,7 @@ export function verifyToken(token: string) {
     throw new Error("secret ke is missing");
   } else {
     try {
-      const decoded = jwt.verify(token, secretKey);
+      const decoded = jwt.verify(token, secretKey)
       return decoded;
     } catch (error) {
       console.error("Token verification failed:", error);

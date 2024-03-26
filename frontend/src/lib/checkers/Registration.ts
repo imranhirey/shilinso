@@ -25,10 +25,10 @@ const CheckSignupForm = (userInfo: UserInfo) => {
         return { status: 'error', message: 'Password and confirm password do not match.' };
     }
 
-    // Check if all names are even in length
-    if (firstName.length % 2 !== 0 || (middleName && middleName.length % 2 !== 0) || lastName.length % 2 !== 0) {
-        return { status: 'error', message: 'Names must have an even number of characters.' };
-    }
+    // // Check if all names are even in length
+    // if (firstName.length % 2 !== 0 || (middleName && middleName.length % 2 !== 0) || lastName.length % 2 !== 0) {
+    //     return { status: 'error', message: 'Names must have an even number of characters.' };
+    // }
 
     // All checks passed, return success
     return { status: 'ok' };
