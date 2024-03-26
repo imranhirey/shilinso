@@ -4,6 +4,7 @@ import { log } from "console";
 import { generateToken } from "../../utils/TokenUtils.js";
 import {config} from "dotenv"
 import { sendVerificationLink } from "../../communications/email/verification.js";
+import { generateOTP } from "../../utils/otpcode.js";
 config()
 
 export const Emailverificationprocessor = async (
@@ -27,14 +28,11 @@ export const Emailverificationprocessor = async (
     }
 
  
-   const token= generateToken({
-    user_id:userid
-   })
-   const verificationlink= process.env.APP_BACKENDURL+"/verify/email/"+token
+   const otp= generateOTP(6)
 
    await sendVerificationLink({
     from:"Shilinso Verifications Departmenet",
-    link:verificationlink,
+    link:otp,
     name:user.firstName,
     subject:"Verify your email address",
     to:user.email

@@ -47,7 +47,8 @@ export async function sendVerificationLink(data:Incommingdata): Promise<Response
     from: `${data.from} <verifications@shilinso.co.uk>`,
     to: data.to,
     subject:data.subject,
-    html: finalHtml // Set the HTML content
+    html: finalHtml // Set the HTML content,
+    
   };
 
   try {

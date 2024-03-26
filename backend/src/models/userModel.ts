@@ -2,10 +2,7 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import { RegFields } from '../@types/auth';
 
-export const securitySchema = new Schema({
 
-  // Add more security-related fields as needed
-});
 
 const userSchema = new Schema({
   firstName: {

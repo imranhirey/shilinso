@@ -21,7 +21,11 @@ async  function CheckLogin(req: Request, res: Response,next:NextFunction) {
    try {
     const user= await User.findOne({email:email})
     if (!user){
-        return res.status(400).send("Invalid details")
+        return res.status(401).send({
+            message:"Authentication Failed",
+            error:"unf"
+        
+        })
     }
     log(user)
 

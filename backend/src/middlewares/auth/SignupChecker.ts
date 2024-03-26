@@ -22,8 +22,10 @@ function CheckSignup(req: Request, res: Response, next: NextFunction) {
         return res.status(400).send(message).end();
     }
 
-    let data: Incommindata = req.body.userInfo
-    log(data)
+    let data: Incommindata = req.body;
+    if (!data) {
+        return sendBadRequestRes("User info is missing in the request body");
+    }
     const requiredFields = ['firstName', 'lastName', 'email', 'dateOfBirth', 'password']; // Add all the fields that are required
 
    let missingFields: string[] = [];
@@ -64,7 +66,7 @@ function CheckSignup(req: Request, res: Response, next: NextFunction) {
     // Hash the password
     hashPassword(data.password)
         .then((hashedPassword) => {
-            req.body.userInfo.password = hashedPassword;
+            req.body.password = hashedPassword;
             next();
         })
         .catch((err) => {

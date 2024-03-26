@@ -95,7 +95,7 @@ export default function SignUpForm() {
       });
     } else {
       axios
-        .post("http://localhost:3001/auth/signup", { userInfo })
+        .post("http://localhost:3001/auth/signup", { ...userInfo })
         .then((resp) => {
           setchecking(false)
           toast({

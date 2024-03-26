@@ -7,8 +7,8 @@ let router = Router();
 
 
 //@ts-ignore
-router.get("/email/:token",Emailverificationchecker)
 router.post("/email",Emailverificationprocessor)
+router.post("/email/:userid",Emailverificationchecker)
 
 
 export default router;

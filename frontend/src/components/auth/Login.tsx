@@ -15,6 +15,9 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { Router, useRouter } from "next/router";
+import { Auth } from "@/api/auth";
+import { set } from "react-hook-form";
+import Image from "next/image";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -24,45 +27,39 @@ export default function LoginForm() {
   const router=useRouter()
 
   const handleLogin = async (event:any) => {
+    toast.closeAll()
 
     event.preventDefault();
         
     setLoading(true);
 
-    try {
-      // Send login request
-      const response = await axios.post("http://localhost:3001/auth/login", {
-        email,
-        password,
-      });
-      
+    const auth = new Auth();
+    const response = await auth.login({ email, password });
 
-      // Handle successful login
+    if (!response.iserror) {
       toast({
-        title: "Login Successful",
-        description: "You have successfully logged in.",
+        title: "Login successful",
+        description: response.message,
         status: "success",
         duration: 3000,
         isClosable: true,
       });
-
-
-      setTimeout(() => {
-      }, 500);
       
-    } catch (error) {
-      // Handle login error
-      console.error("Login error:", error);
+      // router.push('/')
+    } else {
       toast({
-        title: "Login Failed",
-        description: "Invalid email or password. Please try again.",
+        title: "Login failed",
+        description: response.message,
         status: "error",
         duration: 3000,
         isClosable: true,
       });
     }
-
+    
     setLoading(false);
+
+  
+  
   };
 
   return (
@@ -71,18 +68,32 @@ export default function LoginForm() {
       align={"center"}
       justify={"center"}
       width={"100vw"}
-      bg={useColorModeValue("gray.50", "gray.800")}
+      bg={"white"}
     >
+
+   
       <Box
         rounded={"lg"}
         bg={useColorModeValue("white", "gray.700")}
         boxShadow={"lg"}
         p={8}
       >
+        <Box style={{
+          display:"flex",
+          justifyContent:"center",
+          alignItems:"center"
+        }}>
+        <Image
+      src={"/images/logo.png"}
+      alt="shilinso logo"
+      width={300}
+      height={300}
+      />
+        </Box>
         <Stack spacing={8} mx={"auto"} maxW={"md"} py={12} px={6}>
           <Stack align={"center"}>
             <Heading fontSize={"2xl"} textAlign={"center"}>
-              Log in to Your Account - Shilinso
+              
             </Heading>
             <Text fontSize={"lg"} color={"gray.600"}>
               Welcome back! Log in to access your account.
@@ -93,6 +104,7 @@ export default function LoginForm() {
               <FormControl id="email" isRequired>
                 <FormLabel>Email Address</FormLabel>
                 <Input
+                disabled={loading}
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -101,6 +113,7 @@ export default function LoginForm() {
               <FormControl id="password" isRequired>
                 <FormLabel>Password</FormLabel>
                 <Input
+                disabled={loading}
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}

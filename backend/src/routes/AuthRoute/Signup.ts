@@ -5,7 +5,7 @@ import Usercontroller from "../../controllers/users/Usercontroller.js";
 async function Signup(req: Request, res: Response) {
     try {
         const userController = new Usercontroller("personal");
-        const response = await userController.saveNewUser(req.body.userInfo);
+        const response = await userController.saveNewUser(req.body);
 
         if (response.type === "error") {
             return res.status(400).send("Error: Unable to save the user Reason: "+response.data);
