@@ -8,7 +8,9 @@ class UserController {
         this.usertype = usertype;
     }
     async saveNewUser(user) {
-        return this.usertype === "personal" ? this.personalAccount(user) : this.businessAccount();
+        return this.usertype === "personal"
+            ? this.personalAccount(user)
+            : this.businessAccount();
     }
     log(message, ...args) {
         if (process.env.ENV === "development") {
@@ -16,6 +18,7 @@ class UserController {
         }
     }
     async personalAccount(incomingUserData) {
+        console.log("personal account commin", incomingUserData);
         try {
             const userData = {
                 ...incomingUserData,
@@ -25,7 +28,9 @@ class UserController {
             const savedUser = await user.save();
             return {
                 type: "success",
-                data: "User saved successfully"
+                data: {
+                    userid: savedUser.userId,
+                },
             };
         }
         catch (error) {
@@ -33,7 +38,7 @@ class UserController {
             console.error("Error saving user:", error);
             return {
                 type: "error",
-                data: "Failed to register user"
+                data: "Failed to register user",
             };
         }
     }
@@ -41,7 +46,7 @@ class UserController {
         this.log("Creating business account");
         return {
             type: "error",
-            data: "Business account creation is not implemented"
+            data: "Business account creation is not implemented",
         };
     }
 }

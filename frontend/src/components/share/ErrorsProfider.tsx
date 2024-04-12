@@ -2,13 +2,22 @@ import { Alert, AlertDescription, AlertIcon, AlertTitle } from '@chakra-ui/react
 import Link from 'next/link'
 import React from 'react'
 
-function ErrorsProfider() {
+function ErrorsProfider(props: {message: string}) {
   return (
-    <Alert status='error'>
+    <Alert style={{
+        // make goo styling here
+
+      
+       // make it
+    
+
+    }} status='warning'>
     <AlertIcon />
-    <AlertTitle>
-        Verify your email address or click this <Link color={"orange"} href={""}>Link</Link> to veriy 
-    </AlertTitle>
+    <AlertDescription>
+       {
+          props.message
+       }
+    </AlertDescription>
   
   </Alert>
   )

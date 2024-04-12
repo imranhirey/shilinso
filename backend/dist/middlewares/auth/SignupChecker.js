@@ -5,6 +5,9 @@ function CheckSignup(req, res, next) {
         return res.status(400).send(message).end();
     };
     let data = req.body;
+    if (!data) {
+        return sendBadRequestRes("User info is missing in the request body");
+    }
     const requiredFields = ['firstName', 'lastName', 'email', 'dateOfBirth', 'password']; // Add all the fields that are required
     let missingFields = [];
     requiredFields.forEach(field => {
@@ -29,11 +32,19 @@ function CheckSignup(req, res, next) {
         return sendBadRequestRes(passworderrors.toString());
     }
     // Validate gender if provided
-    const validGenders = ['male', 'female', 'other'];
+    const validGenders = ["male", "female"];
     if (data.gender && !validGenders.includes(data.gender)) {
         return sendBadRequestRes("Invalid gender");
     }
-    // Additional validations can be added for other fields as needed
+    // checking if there is something called israel in the request body as country or ip origin
+    const ErrorIsral = "Access Restricted || State (Israel Not Allowed)  - ";
+    const usercountry = data.country;
+    if (usercountry && usercountry === "Israel") {
+        return res.status(403).send(ErrorIsral);
+        // block the ip
+        const ip = req.body?.ip;
+        //   secureHeapUsed (ip) 
+    }
     // Hash the password
     hashPassword(data.password)
         .then((hashedPassword) => {

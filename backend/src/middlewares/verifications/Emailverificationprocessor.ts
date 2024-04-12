@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import User from "../../models/userModel.js";
 import { log } from "console";
-import { generateToken } from "../../utils/TokenUtils.js";
 import {config} from "dotenv"
 import { sendVerificationLink } from "../../communications/email/verification.js";
 import { generateOTP } from "../../utils/otpcode.js";
@@ -29,6 +28,13 @@ export const Emailverificationprocessor = async (
 
  
    const otp= generateOTP(6)
+   // updae the user with the otp
+    const update = { $set: { "security.otp": otp } };
+    const result = await User.updateOne(filter, update);
+    if (result.modifiedCount === 0) {
+      return res.status(500).send("Internal Server Error");
+    }
+    
 
    await sendVerificationLink({
     from:"Shilinso Verifications Departmenet",

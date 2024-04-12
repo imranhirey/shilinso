@@ -1,6 +1,6 @@
 // userModel.ts
 import mongoose, { Document, Schema } from 'mongoose';
-import { RegFields } from '../@types/auth';
+import Wallet from './walletModal.js';
 
 
 
@@ -55,6 +55,15 @@ const userSchema = new Schema({
       type: Boolean,
       default: false
     },
+    otp:{
+      type:String
+
+    },
+    loginststus:{
+      type:String,
+      enum:['active','inactive'],
+      default:"inactive"
+    },
    isverified:{
     email:{
       type:Boolean,
@@ -67,9 +76,14 @@ const userSchema = new Schema({
     }
   
    }
-  }
+  },
+// ...
+Walletid: {
+  type:String
+}
+// ...
 });
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model('users', userSchema);
 
 export default User;

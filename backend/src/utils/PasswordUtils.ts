@@ -1,15 +1,19 @@
 import bcrypt from "bcrypt";
+import { log } from "console";
 const saltRounds = 10; // The cost factor for hashing
 
 export const hashPassword = async (plainTextPassword: string): Promise<string> => {
+    log(plainTextPassword)
     const salt = await bcrypt.genSalt(saltRounds);
     const hash = await bcrypt.hash(plainTextPassword, salt);
-    return hash;
+    return hash;  
 };
 
 export const comparePasswords = async (userEnteredPassword: string, hashFromDatabase: string): Promise<boolean> => {
+    log(userEnteredPassword, hashFromDatabase);
     try {
         const result = await bcrypt.compare(userEnteredPassword, hashFromDatabase);
+        log(result)
         return result;
     } catch (error) {
         console.error("Error comparing passwords:", error);

@@ -1,33 +1,56 @@
 import User from "../../models/userModel.js";
-import { log } from "console";
-import { generateToken } from "../../utils/TokenUtils.js";
 import { config } from "dotenv";
 config();
-export const emailverificationchecker = async (req, res, next) => {
-    const userid = req.body.userid;
-    log(userid);
+export const emailVerificationChecker = async (req, res, next) => {
     try {
-        const filter = { userId: userid };
-        const user = await User.findOne(filter);
+        const userId = req.params.userid;
+        const user = await User.findOne({ userId });
         if (!user) {
-            return res.status(404).send("User not found");
+            return res.status(401).json({
+                type: "error",
+                message: "User not found",
+            });
         }
-        if (user.security && user.security.isverified && user.security.isverified.email) {
-            return res.status(400).send("The email associated with your account has already been verified");
+        if (user.security?.isverified?.email) {
+            return res.status(400).json({
+                type: "error",
+                message: "The email associated with your account has already been verified",
+            });
         }
-        const update = { $set: { "security.isverified.email": true } };
-        const result = await User.updateOne(filter, update);
+        if (!user.security?.otp) {
+            return res.status(200).json({
+                type: "error",
+                message: "No OTP code found",
+            });
+        }
+        if (user.security?.otp !== req.body.otp) {
+            return res.status(401).json({
+                type: "error",
+                message: "Invalid OTP code",
+            });
+        }
+        const update = {
+            $set: {
+                "security.isverified.email": true,
+                "security.otp": null,
+            },
+        };
+        const result = await User.updateOne({ userId }, update);
         if (result.modifiedCount === 0) {
-            return res.status(404).send("Nothing updated");
+            return res.status(500).json({
+                type: "error",
+                message: "Internal Server Error",
+            });
         }
-        const token = await generateToken({
-            user_id: userid
+        return res.status(200).json({
+            type: "success",
+            message: "Email verified successfully",
         });
-        const verificationlink = process.env.APP_BACKENDURL + "/verify/email/" + userid + "/" + token;
-        res.send("this is you verification link it should be sent to your email" + verificationlink).status(200).end();
     }
-    catch (error) {
-        console.error("Error occurred during email verification:", error);
-        return res.status(500).send("Internal Server Error");
+    catch (err) {
+        return res.status(500).json({
+            type: "error",
+            message: "Internal Server Error",
+        });
     }
 };

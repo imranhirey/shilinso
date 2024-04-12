@@ -1,68 +1,70 @@
- import { log } from "console"
-import {GetCountriesList, Getcitiesbycountry} from "./data/countries.js"
-import { rateLimit } from 'express-rate-limit'
+// External imports
+import express, { NextFunction, Request, Response } from "express";
+import { config } from "dotenv";
+import { rateLimit } from "express-rate-limit";
 
-const app = express();
-app.use(bodyParser({
-  limit:"50mb"
-}))
-import {config} from "dotenv"
-config()
-
- import express, { NextFunction, Request, Response } from 'express';
- app.use(function (req, res, next) {
-  res.setHeader('Access-Control-Allow-Origin', '*'); // Replace with your allowed origin
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS'); // Allowed HTTP methods
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization'); // Allowed headers
-  next();
-});
-
-
-
- import dataroute from "./routes/data/index.js"
- import auth from "./routes/AuthRoute/index.js"
- import verifications from "./routes/verificationsRoute/index.js"
-
-
+// Internal imports
+import dataroute from "./routes/data/index.js";
+import auth from "./routes/AuthRoute/index.js";
+import usersroute from "./routes/users/index.js";
+import verifications from "./routes/verificationsRoute/index.js";
+import walletroute from "./routes/wallet/index.js";
 
 import connectDB from "./database/connection.js";
-import bodyParser from "body-parser";
-import { AuthTokenChecker } from "./middlewares/Tokenchecker.js";
- const port =process.env.BACKEND_PORT
- const apiLimiter = rateLimit({
-   windowMs: 15 * 60 * 1000, // 15 minutes
-   max: 10, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
-   message: 'Too many requests from this IP, please try again after 15 minutes',
- });
+import cors from "cors";
 
+config();
 
-// END  
- app.use("/*",apiLimiter)
- app.use("/get",dataroute)
- app.use("/auth",auth)
- app.use("/verify",verifications)
-//  app.get("/protected",AuthTokenChecker,(req,res)=>{
-//   res.send("ok")
-// })
-app.all("*", (req: Request, res: Response, next: NextFunction) => {
-  res.status(401).send(`
-    <html>
-      <head>
-        <title>An authothorized access</title>
-      </head>
-      <body style="text-align: center; background-color: #fafafa; color: #616161;">
-        <h1>401 - Access restricted</h1>
-        <p>The page you are looking for dhas been restricted.</p>
-      </body>
-    </html>
-  `);
+const app = express();
+
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL,
+    credentials: true,
+  })
+);
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 10 requests per window
+  message: "Too many requests from this IP, please try again after 15 minutes",
 });
 
- app.listen(port, async () => {
-  let connection=await connectDB()
+app.use(apiLimiter);
 
-   console.log(`Server running on port ${port}`);
- });
+app.use("/get", dataroute);
+app.use("/auth", auth);
+app.use("/verify", verifications);
+app.use("/users", usersroute);
+app.use("/wallet", walletroute);
 
- 
 
+app.all("*", (req: Request, res: Response) => {
+  return res.status(404).json({
+    type: "error",
+    message: "Route not found",
+  });
+});
+
+// Global error handling middleware
+app.use((err: Error, _req: Request, res: Response, next: NextFunction) => {
+  console.error(err.stack);
+  return res.status(500).json({
+    type: "error",
+    message:
+      "an erro occured, please contact the adminstrator for help with this issue.",
+  });
+});
+
+const port = process.env.BACKEND_PORT;
+app.listen(port, async () => {
+  try {
+    await connectDB();
+    console.log(`Server is running on port ${port}`);
+  } catch (error) {
+    console.error("Failed to connect to the database", error);
+    process.exit(1);
+  }
+});

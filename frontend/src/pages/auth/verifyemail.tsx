@@ -1,5 +1,6 @@
 'use client'
 
+import { Auth } from '@/api/auth'
 import { Box, Center, Heading, useToast } from '@chakra-ui/react'
 import {
   Button,
@@ -12,9 +13,11 @@ import {
 } from '@chakra-ui/react'
 import { PinInput, PinInputField } from '@chakra-ui/react'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export default function VerifyEmailForm() {
+
+  
     const toast = useToast()
     const [pin, setPin] = useState("");
     const [checking,setchecking]=useState(false)
@@ -82,30 +85,55 @@ const handlePinChange = (value: string) => {
         </FormControl>
         <Stack spacing={6}>
           <Button
-          onClick={()=>{
+          onClick={async ()=>{
             toast.closeAll()
-            if (pin!="123456"){
+            let userid= localStorage.getItem("userid")
+           if (!userid){
+             toast({
+               title:"Error",
+               description:"Userid not found",
+               status:"error",
+               duration:5000,
+               isClosable:true
+             })
+             return
+           }
+           else{
+            try {
+              let auth = await new Auth().verifyOtp(userid,pin)
+              if (auth.iserror){
                 toast({
-                    status:"error",
-                    title:"invalid code ",
-                    description:"please check your email and try again",
-                    isClosable:true,
-                    duration:3000,
-            
+                  title:"Error",
+                  description:auth.message,
+                  status:"error",
+                  duration:5000,
+                  isClosable:true
                 })
-                setPin("")
-            }
-            else{
+              }
+              else{
                 toast({
-                    status:"success",
-                    title:"Email Verified ",
-                    description:"Yur email address has been verified successfuly",
-                    isClosable:true,
-                    duration:3000,
-            
+                  title:"Success",
+                  description:auth.message,
+                  status:"success",
+                  duration:5000,
+                  isClosable:true
                 })
+              }
             
+              
+            } catch (error) {
+              toast({
+                title:"Error",
+                description:"An error occured",
+                status:"error",
+                duration:5000,
+                isClosable:true
+              })
+              
             }
+           }
+          
+            
           }}
             bg={'blue.400'}
             color={'white'}

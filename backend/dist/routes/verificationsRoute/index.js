@@ -1,6 +1,8 @@
 import { Router } from "express";
-import { emailverificationchecker } from "../../middlewares/verifications/Emailverificationchecker.js";
+import { Emailverificationprocessor } from "../../middlewares/verifications/Emailverificationprocessor.js";
+import { emailVerificationChecker } from "../../middlewares/verifications/Emailverificationchecker.js";
 let router = Router();
 //@ts-ignore
-router.post("/email", emailverificationchecker);
+router.post("/email", Emailverificationprocessor);
+router.post("/email/:userid", emailVerificationChecker);
 export default router;

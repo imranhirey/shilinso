@@ -14,10 +14,16 @@ import {
   Link,
 } from "@chakra-ui/react";
 import axios from "axios";
-import { Router, useRouter } from "next/router";
+import {  useRouter } from "next/router";
+import Router from "next/router";
+
 import { Auth } from "@/api/auth";
 import { set } from "react-hook-form";
 import Image from "next/image";
+import { useSelector ,UseDispatch} from "react-redux";
+import {userState} from "../../store"
+import {login} from "../../slices/authSlice"
+import { useDispatch } from "react-redux";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -25,6 +31,9 @@ export default function LoginForm() {
   const [loading, setLoading] = useState(false);
   const toast = useToast();
   const router=useRouter()
+  const user= useSelector((state: userState) => state.auth.user);
+
+  const dispatch = useDispatch();
 
   const handleLogin = async (event:any) => {
     toast.closeAll()
@@ -36,7 +45,21 @@ export default function LoginForm() {
     const auth = new Auth();
     const response = await auth.login({ email, password });
 
+
     if (!response.iserror) {
+      console.log(response?.data.token);
+      // set token in local storage
+      localStorage.setItem('token',response?.data.token)
+      auth.getuserithToken(response?.data.token).then((res)=>{
+      dispatch(login({
+        user:res.data,
+
+      
+      }))        
+      })
+
+      Router.push('/dashboard')
+
       toast({
         title: "Login successful",
         description: response.message,

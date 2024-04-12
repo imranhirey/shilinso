@@ -10,3 +10,4 @@ export interface EmailVerificationDynamicContext{
     name:string,
     additionsal_text?:string
 }
+

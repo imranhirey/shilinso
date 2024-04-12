@@ -10,6 +10,7 @@ export default interface UserInfo {
     password: "",
     city:string,
     confirmPassword: string
+    phoneNumber: string
     
 
 }

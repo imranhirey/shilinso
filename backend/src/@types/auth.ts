@@ -1,7 +1,7 @@
 
 
 
-export interface RegFields{
+export interface SignupFields{
     firstName: string;
   middleName?: string;
   lastName: string;
@@ -13,7 +13,8 @@ export interface RegFields{
   password: string;
   profileImageUrl?: string;
   gender: 'male' | 'female' | 'other';
-  security:object
+  confirmPassword:string
+  
 }
 
 

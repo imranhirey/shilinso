@@ -14,5 +14,4 @@ const connectDB = async () => {
         console.error('Error connecting to MongoDB:', error);
     }
 };
-// Export the connectDB function to be used elsewhere in the application
 export default connectDB;

@@ -20,6 +20,4 @@ const connectDB = async (): Promise<void> => {
         
     }
 };
-
-// Export the connectDB function to be used elsewhere in the application
 export default connectDB;

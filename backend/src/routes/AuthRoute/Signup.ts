@@ -8,10 +8,10 @@ async function Signup(req: Request, res: Response) {
         const response = await userController.saveNewUser(req.body);
 
         if (response.type === "error") {
-            return res.status(400).send("Error: Unable to save the user Reason: "+response.data);
+            return res.status(400).send(response.data);
         } else {
             // Depending on your application logic, you might send a success response here
-            return res.status(200).send("User saved successfully"+response.data);
+            return res.status(200).send(response.data);
         }
     } catch (error) {
         console.error(error);

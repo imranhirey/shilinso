@@ -1,9 +1,14 @@
-import { generateToken } from "../../utils/TokenUtils.js";
+import TokenUtils from "../../utils/TokenUtils.js";
 function Login(req, res) {
-    let token = generateToken({
+    const tokenutils = new TokenUtils("access");
+    console.log(req.body);
+    let token = tokenutils.generateToken({
         user_id: req.body.userid
     });
-    res.send(token).status(200);
+    res.json({
+        type: "success",
+        token: token
+    }).status(200);
     res.end();
 }
 export default Login;

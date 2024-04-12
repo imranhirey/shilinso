@@ -1,8 +1,5 @@
 // userModel.ts
 import mongoose, { Schema } from 'mongoose';
-export const securitySchema = new Schema({
-// Add more security-related fields as needed
-});
 const userSchema = new Schema({
     firstName: {
         type: String,
@@ -18,7 +15,7 @@ const userSchema = new Schema({
     email: {
         type: String,
         required: true,
-        unique: true
+        unique: false
     },
     phoneNumber: {
         type: String
@@ -54,6 +51,14 @@ const userSchema = new Schema({
             type: Boolean,
             default: false
         },
+        otp: {
+            type: String
+        },
+        loginststus: {
+            type: String,
+            enum: ['active', 'inactive'],
+            default: "inactive"
+        },
         isverified: {
             email: {
                 type: Boolean,
@@ -66,5 +71,5 @@ const userSchema = new Schema({
         }
     }
 });
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model('users', userSchema);
 export default User;

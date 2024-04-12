@@ -3,7 +3,7 @@ import { log } from 'console';
 import { readFile } from './utils.local/index.js';
 import Handlebars from 'handlebars';
 import { transporter } from './index.js';
-export async function sendVerificationLink() {
+export async function sendVerificationLink(data) {
     const md = markdownIt();
     const file = {
         name: 'verifications'
@@ -11,8 +11,8 @@ export async function sendVerificationLink() {
     const content = readFile({ name: 'verifications' });
     // Define dynamic content
     const context = {
-        link: 'https://example.com/verify',
-        name: 'Imran',
+        link: data.link,
+        name: data.name,
         // Add more dynamic content as needed
         additionsal_text: "thank for using our service "
     };
@@ -22,10 +22,10 @@ export async function sendVerificationLink() {
     const finalHtml = `${compiledHeader}`;
     // Define email options
     const mailOptions = {
-        from: 'Shilinso Verifications Team <verifications@shilinso.co.uk>',
-        to: 'imrannurhirey@icloud.com',
-        subject: 'Verification Team',
-        html: finalHtml // Set the HTML content
+        from: `${data.from} <verifications@shilinso.co.uk>`,
+        to: data.to,
+        subject: data.subject,
+        html: finalHtml // Set the HTML content,
     };
     try {
         await transporter.sendMail(mailOptions);

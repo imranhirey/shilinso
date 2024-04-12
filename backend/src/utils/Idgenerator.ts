@@ -18,3 +18,10 @@ export function  Genrateuserid(){
   let userid="U"+generateRandomNumberString(6)
   return userid
 }
+
+
+export function Generatewalletid(){
+  let walletid="W"+generateRandomNumberString(6)
+  return walletid
+
+}

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { LoginFields, RegFields } from "../../@types/auth";
+import { LoginFields } from "../../@types/auth";
 import mongoose from "mongoose";
 import User from "../../models/userModel.js";
 import { comparePasswords } from "../../utils/PasswordUtils.js";
@@ -21,25 +21,40 @@ async  function CheckLogin(req: Request, res: Response,next:NextFunction) {
    try {
     const user= await User.findOne({email:email})
     if (!user){
-        return res.status(401).send({
-            message:"Authentication Failed",
-            error:"unf"
+        return res.status(401).json({
+          type:"error",
+            message:"we could not find a user with the provided email address",
         
         })
     }
-    log(user)
+    log(password,user.password)
 
     const Ispasswordmatch=  await   comparePasswords(password,user.password)
     log(Ispasswordmatch)
     if (Ispasswordmatch){
+        req.body.userid=user.userId
         // i will do other stuff like generating token and respinsing abck with header added a token
-       if (!user.security?.isverified?.email){
-        res.set("route","/auth/emailverification")
-       }
+    //   req.body.userId=user.userId
+    //     if (user?.security?.hastwoFactorAuth){
+    //         // check if the user has verified his email and phone number
+    //         if (user?.security?.isverified?.email || user?.security?.isverified?.phonenumber){
+    //             return res.status(200).send("Two Factor Auth is enabled")
+    //         }
+    //         else{
+    //             return res.status(401).send("Two Factor Auth is enabled but you have not verified your email and phone number")
+    //         }
+    //     }
+    //     else{
+    //         return res.status(200).send("Login Successful")
+    //     }
       
     }
     else{
-        return res.status(401).send("Authentication Fieled you have //certain number of tries   please check your credentials before trying again or request password reset") 
+      log(password)
+        return res.status(401).json({
+            type:"error",
+            message:"Invalid password provided",
+        }) 
     }
 
     
